@@ -1,4 +1,4 @@
-Census Data Analysis and Clustering
+Census Data Analysis and Clustering: SoVI derivation
 
 This project involves analyzing census data, performing correlation analysis, and applying K-means clustering to uncover patterns and insights. The results are visualized through various plots, including a heatmap of correlation coefficients and a bar plot of significant correlations.
 
