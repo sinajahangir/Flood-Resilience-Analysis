@@ -64,7 +64,7 @@ chdir(r'D:\NRC')
 #The name should be changed
 df_da=pd.read_csv('DA_Calgary_Variables_v1.csv')
 #%%
-#Convert to array
+#Subsetting
 da=df_da.iloc[:,7:]
 #%%
 # Calculate Pearson correlation coefficient
