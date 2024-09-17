@@ -64,6 +64,7 @@ for kk in [2,5,10,50,100,200,1000]:
         if flag_==0:
             temp_1=length
             #temp_2=ebc
+            #calculating exposure only based on the road netwrok length
             exposure_[ii,0]=np.sum(temp_1)
     gdf=gpd.read_file(r"D:\NRC\Exposure_CalgaryDA\CalgaryDA.shp")
     gdf['Exposure']=(exposure_-np.min(exposure_))/(np.max(exposure_)-np.min(exposure_))
