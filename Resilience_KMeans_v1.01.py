@@ -5,8 +5,7 @@
 # clustering to cluster it alongside the socio-economic variables, and finally
 # derives resilience categorization accordingly
 
-#Note: It seems that the DAs with the most flood exposure are missing data
-#associated with census data
+#Note: It seems that the DAs with the most flood exposure have missing census data
 
 # -------------------------------------------
 # K-Means Clustering Description:
