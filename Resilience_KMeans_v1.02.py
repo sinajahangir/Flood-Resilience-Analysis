@@ -89,11 +89,13 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 #%%
 # Handle missing values by replacing NaN with column averages before scaling
-imputer = SimpleImputer(strategy='mean')
-data_with_imputed_values = imputer.fit_transform(da)
+    #Uncomment below
+#imputer = SimpleImputer(strategy='mean')
+#data_with_imputed_values = imputer.fit_transform(da)
 # Standardize the data
 scaler = StandardScaler()
-scaled_data = scaler.fit_transform(data_with_imputed_values)
+scaled_data = scaler.fit_transform(da)
+#scaled_data = scaler.fit_transform(data_with_imputed_values)
 #%%
 # Calculate WCSS for different numbers of clusters
 wcss = []
@@ -101,7 +103,7 @@ max_clusters = 16
 
 for i in range(1, max_clusters + 1):
     kmeans = KMeans(n_clusters=i, random_state=42)
-    kmeans.fit(scaled_data)
+    kmeans.fit(scaled_data[~np.isnan(scaled_data).any(axis=1)])
     wcss.append(kmeans.inertia_)  # inertia_ is the WCSS for each cluster
 
 # Plot the elbow method graph
@@ -120,11 +122,15 @@ optimal_clusters = 7
 
 # Apply K-Means clustering
 kmeans = KMeans(n_clusters=optimal_clusters, random_state=42)
-cluster_labels = kmeans.fit_predict(scaled_data)
+cluster_labels = kmeans.fit_predict(scaled_data[~np.isnan(scaled_data).any(axis=1)])
 
 # Add the cluster labels to the original DataFrame
-da['Cluster'] = cluster_labels
+da['Cluster'] = -5
+da['Cluster'][~da.isna().any(axis=1)]=cluster_labels
+da['Cluster'][da['Cluster']==-5]=np.nan
 
+
+#%%
 #Plot the clusters if you have 2D or 3D data
 plt.figure(figsize=(6, 6),dpi=300)
 plt.scatter(scaled_data[:, 0], scaled_data[:,-1], c=cluster_labels, cmap='viridis', s=50)
@@ -165,8 +171,10 @@ for bar in bars:
 #%%
 #classify labels
 #This is subjective and data driven
-da['class_res']='Low'
-da['class_res'][da['RES']>2]='High'
+da['class_res']='High'
+da['class_res'][da['RES']<2]='Low'
+da['class_res'][da.isna().any(axis=1)]=np.nan
+
 #%%
 #remove "exposure" column from the dataframe. This is already saved the gdf
 da = da.drop('exposure', axis=1)
