@@ -6,7 +6,7 @@
 # derives resilience categorization accordingly
 
 #Note: The main difference between this version and the previous one (v1.01) is
-# how exposure was claculated. Also, any row having a NaN value in any columns
+# how exposure was claculated (only length and not EBC). Also, any row having a NaN value in any columns
 # is set to NaN
 
 #Note: It seems that the DAs with the most flood exposure have missing census data
@@ -133,7 +133,7 @@ da['Cluster'][da['Cluster']==-5]=np.nan
 #%%
 #Plot the clusters if you have 2D or 3D data
 plt.figure(figsize=(6, 6),dpi=300)
-plt.scatter(scaled_data[:, 0], scaled_data[:,-1], c=cluster_labels, cmap='viridis', s=50)
+plt.scatter(scaled_data[:, 0], scaled_data[:,-1], c=da['Cluster'], cmap='viridis', s=50)
 plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=200, c='red', marker='X')
 plt.title('K-Means Clustering')
 plt.xlabel('Population density')
@@ -196,4 +196,4 @@ df_res=pd.concat((classified_df,da['class_res']),axis=1)
 #save shapefile
 for ii in df_res.columns:
     gdf[ii]=df_res[ii]
-gdf.to_file(r'RS_KM_Calgary_RP=%d_v1.1.shp'%(RP[0]))
+gdf.to_file(r'RS_KM_Calgary_RP=%d_v1.02.shp'%(RP[0]))
