@@ -131,7 +131,7 @@ ax.set_xlim(x_center - x_range, x_center + x_range)
 ax.set_ylim(y_center - y_range, y_center + y_range)
 
 plt.tight_layout()
-fig.text(0.01, 0.01, 'Credit: Jahangir and Shirkhani, National Research Council Canada (2024)', ha='left', va='bottom', fontsize=12)
+fig.text(0.01, 0.01, 'Credit: Jahangir and Shirkhani, NRC (2024)', ha='left', va='bottom', fontsize=12)
 fig.text(0.01, 0.04, 'RF=Riverine Flood; SW=Surface Water', ha='left', va='bottom', fontsize=12)
     
 #%%
@@ -144,12 +144,9 @@ RP=[20,50,75,100,200,500,1500]
 frame_paths = []
 #Flood type
     ##Either RF or SW
-fl_t='SW'
+fl_t='RF'
 for ii in RP:
 # Create a plot with latitude and longitude axes
-    fig, ax = plt.subplots(1, 1, figsize=(6, 6),dpi=600)
-    
-
     raster_path = r'D:\NRC\ClippedJBA_Calgary\CA_202012_FL%s_U_RP%d_RB_30m_4326.tif'%(fl_t,ii)
     with rasterio.open(raster_path) as src:
         raster_data = np.float16(src.read(1))  # Read the first band
@@ -163,7 +160,7 @@ for ii in RP:
     unique_values = np.unique(raster_data[~np.isnan(raster_data)])  # Exclude NaNs
     n_unique = len(unique_values)
     # Create a plot
-    fig, ax = plt.subplots(1, 1,figsize=(6, 6),dpi=600)
+    fig, ax = plt.subplots(1, 1,figsize=(6, 6),dpi=400)
     norm = Normalize(vmin=np.nanmin(raster_data), vmax=np.nanmax(raster_data))
     cmap = cm.get_cmap('tab20b', n_unique)  # Discrete colormap based on unique values
     # Plot raster
@@ -209,9 +206,10 @@ for ii in RP:
     ax.set_ylim(y_center - y_range, y_center + y_range)
 
 
-    plt.tight_layout()
-    fig.text(0.01, 0.01, 'Credit: Jahangir and Shirkhani, National Research Council Canada (2024)', ha='left', va='bottom', fontsize=12)
+    
+    fig.text(0.01, 0.01, 'Credit: Jahangir and Shirkhani, NRC (2024)', ha='left', va='bottom', fontsize=12)
     fig.text(0.01, 0.04, 'RF=Riverine Flood; SW=Surface Water', ha='left', va='bottom', fontsize=12)
+    plt.tight_layout()
     
     # Save the frame
     frame_path = os.path.join(temp_dir, f'frame_{ii}.png')
