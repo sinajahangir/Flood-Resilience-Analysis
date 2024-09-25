@@ -33,7 +33,6 @@ THE SOFTWARE.
 -rasterio
 -json
 -numpy
-#Tested on Python 3.7.16
 """
 #%%
 #Importing the necessary libraries
