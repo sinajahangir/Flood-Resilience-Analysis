@@ -39,8 +39,9 @@ import numpy as np
 import os
 import geopandas as gpd
 #%%
-folder_path=r'D:\NRC\RoadNetwork\ClippedRoad'
-os.chdir(r'D:\NRC\RoadNetwork\ClippedRoad')
+#change directory
+folder_path=r'D:\NRC\Exposure_CalgaryDA\ClipRoad'
+os.chdir(folder_path)
 # Define the names of the attributes and road class column
 attribute2 = 'Length'  # Replace with the actual attribute to divide by
 road_class_column = 'ROADCLASS'  # Column that contains the road class
@@ -89,14 +90,23 @@ for shapefile in shapefiles:
         if row[attribute2] != 0:
             weighted_ratio = (weight) / row[attribute2]
         else:
-            weighted_ratio = None  # Handle division by zero
+            weighted_ratio = np.nan  # Handle division by zero
         temp_w.append(weighted_ratio)
         temp_l.append(row[attribute2])
     # Append the result to the list
-    new_attribute_values.append(np.sum(temp_w)/sum_weights)
-    total_length.append(np.sum(temp_l))
-
-
+    new_attribute_values.append(np.nansum(temp_w))
+    total_length.append(np.nansum(temp_l))
+#%%
+#read source shapefile and add the two derived stats as attributes to the shapefile
+#change directory to the shapefile
+os.chdir(r'D:\NRC\Exposure_CalgaryDA')
+#Calgary boundary shapefile
+shapefile_DA = gpd.read_file('CalgaryDA.shp')
+# Assign the feature values to a new column in shapefile one
+shapefile_DA['RoadLength'] = total_length
+shapefile_DA['RoadW1_L'] = new_attribute_values
+# Save the updated shapefile
+shapefile_DA.to_file('CalgaryDA_RoadAttribute_v1.shp')
        
         
         
