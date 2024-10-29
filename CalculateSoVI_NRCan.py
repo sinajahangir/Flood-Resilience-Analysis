@@ -79,7 +79,8 @@ for idx_one, row_one in shapefile_one.iterrows():
 shapefile_one['SoVI_NRCan'] = mean_feature_values
 
 # Save the updated shapefile (optional)
-shapefile_one.to_file('CalgaryDA_SoVI.shp')
+#uncomment to save
+#shapefile_one.to_file('CalgaryDA_SoVI.shp')
 #%%
 #plot libraries
 import matplotlib.pyplot as plt
@@ -117,7 +118,7 @@ ax.set_ylabel('Latitude', fontsize=14)
     
 # Calculate the center of the boundary
 xmin, ymin, xmax, ymax = shapefile_one.total_bounds
-x_center = -114.1
+x_center = -114
 y_center = 51
 
 
@@ -126,7 +127,7 @@ cbar = plot.get_figure().colorbar(plot.collections[0], cax=cax)
 cbar.set_label('Relative SoVI', fontsize=12)
 
 # Define a zoom factor (0.1 means 10% of the total extent)
-zoom_factor = 0.15
+zoom_factor = 0.1
 x_range = (xmax - xmin) * zoom_factor
 y_range = (ymax - ymin) * zoom_factor
 
