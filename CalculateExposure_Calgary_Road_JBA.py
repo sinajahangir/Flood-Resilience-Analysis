@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-
 Last updated November 2024
 @author: Mohammad Sina Jahangir
 Email:mohammadsina.jahangir@gmail.com
-#This code is for calculating exposure
 #Tested on Python 3.7.16
 Copyright (c) [2024] [Mohammad Sina Jahangir]
 
-#This code is used for 
+#This code is used for surface water (SW) flood exposure analysis
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +33,7 @@ import numpy as np
 import os
 import geopandas as gpd
 #%%
+#change directory to the target folder
 os.chdir(r'D:\NRC')
 #%%
 sovi_=pd.read_csv(r"D:\NRC\DA_Calgary_Table.csv")
@@ -42,7 +41,7 @@ sovi_=pd.read_csv(r"D:\NRC\DA_Calgary_Table.csv")
 #seven flood scenarios
 len_sovi=len(sovi_)
 exposure_=np.zeros((len_sovi,1))
-for kk in [100]:
+for kk in [20,100,500]:
     for ii in range(0,len_sovi):
         flag_=0
         try:
@@ -59,7 +58,9 @@ for kk in [100]:
             exposure_[ii,0]=np.sum(temp_1)/len(temp_1)*100
     gdf=gpd.read_file(r"D:\NRC\Exposure_CalgaryDA\CalgaryDA.shp")
     gdf['Exposure']=(exposure_-np.min(exposure_))/(np.max(exposure_)-np.min(exposure_))
+    df_expos=pd.DataFrame(gdf['Exposure'])
     name_='Clagary_%d_JBA_SW'%(kk)
+    df_expos.to_csv('ExposureRoad_%s_v1.csv'%(name_),index=None)
     try:
         gdf.to_file(r'Exposure_Shapefile_JBA\ExposureRoad_%s_v1.shp'%(name_))
     except Exception as e:
@@ -104,7 +105,7 @@ cbar = fig.colorbar(sm, cax=cax)
 cbar.set_label('Exposure', fontsize=12, fontweight='bold')
 
 # Set plot title and axis labels
-ax.set_title('Exposure', fontsize=16, fontweight='bold')
+ax.set_title('Exposure-RP=%d'%(kk), fontsize=16, fontweight='bold')
 ax.set_xlabel('Longitude', fontsize=14)
 ax.set_ylabel('Latitude', fontsize=14)
 
@@ -114,7 +115,7 @@ x_center = -114
 y_center = 51
 
 # Define a zoom factor (0.15 means 15% of the total extent)
-zoom_factor = 0.15
+zoom_factor = 0.1
 x_range = (xmax - xmin) * zoom_factor
 y_range = (ymax - ymin) * zoom_factor
 
@@ -128,7 +129,7 @@ fig.text(0.01, 0.09, 'Flood exposure', ha='left', va='bottom', fontsize=12)
 
 # Adjust layout and save the figure
 plt.tight_layout()
-plt.savefig('Exposure_SW_CalgaryDA_v1.png')
+plt.savefig('Exposure_SW_CalgaryDA_RP=%d_v1.png'%(kk))
 
     
 
