@@ -55,10 +55,13 @@ for kk in [20,100,500]:
             flag_=1
         if flag_==0:
             temp_1=length
-            exposure_[ii,0]=np.sum(temp_1)/len(temp_1)*100
+            exposure_[ii,0]=len(np.nonzero(length)[0])/len(length)*100
     gdf=gpd.read_file(r"D:\NRC\Exposure_CalgaryDA\CalgaryDA.shp")
-    gdf['Exposure']=(exposure_-np.min(exposure_))/(np.max(exposure_)-np.min(exposure_))
-    df_expos=pd.DataFrame(gdf['Exposure'])
+    # min-max scaling
+    #gdf['Exposure']=(exposure_-np.min(exposure_))/(np.max(exposure_)-np.min(exposure_))
+    gdf['Exposure']=exposure_
+    #df_expos=pd.DataFrame(gdf['Exposure'])
+    df_expos=gdf
     name_='Clagary_%d_JBA_SW'%(kk)
     df_expos.to_csv('ExposureRoad_%s_v1.csv'%(name_),index=None)
     try:
