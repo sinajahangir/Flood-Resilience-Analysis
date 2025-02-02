@@ -36,31 +36,43 @@ import os
 os.chdir(r'D:\NRC')
 #%%
 #pre-define a df
-df_temp=pd.DataFrame()
-ii=0
-#RPs
-for kk in [20,100,500]:
-    name_='Clagary_%d_JBA_SW'%(kk)
-    df=pd.read_csv('ExposureRoad_%s_v1.csv'%(name_))
-    #population density
-    pop_dense=df['pop']/df['a']
-    df_temp['pop_d']=df['pop']/df['a']
-    #return period
-    df_temp['rp']=kk
-    #population density class
-    df_temp['pop_d_c']='Moderate'
-    df_temp['pop_d_c'][pop_dense<np.nanpercentile(pop_dense, 30)]='Low'
-    df_temp['pop_d_c'][pop_dense>np.nanpercentile(pop_dense, 95)]='High'
-    expose=df['Exposure']
-    #exposure
-    df_temp['f_exp']=expose
-    #exposure class
-    df_temp['f_exp_c']='Moderate'
-    df_temp['f_exp_c'][expose<np.nanpercentile(expose, 30)]='Low'
-    df_temp['f_exp_c'][expose>np.nanpercentile(expose, 95)]='High'
-    if ii==0:
-        df_total=df_temp
+ii = 0
+df_total = pd.DataFrame()
+
+for kk in [20, 100, 500]:
+    name_ = 'Clagary_%d_JBA_SW' % (kk)
+    df = pd.read_csv('ExposureRoad_%s_v1.csv' % (name_))
+    
+    # Initialize df_temp within the loop
+    df_temp = pd.DataFrame()
+    
+    # Population density
+    pop_dense = df['pop'] / df['a']
+    df_temp['pop_d'] = pop_dense
+    
+    # Return period
+    df_temp['rp'] = kk
+    
+    # Population density class
+    df_temp['pop_d_c'] = 'Moderate'
+    df_temp.loc[pop_dense < np.nanpercentile(pop_dense, 30), 'pop_d_c'] = 'Low'
+    df_temp.loc[pop_dense > np.nanpercentile(pop_dense, 95), 'pop_d_c'] = 'High'
+    
+    # Exposure
+    expose = df['Exposure']
+    df_temp['f_exp'] = expose
+    
+    # Exposure class
+    df_temp['f_exp_c'] = 'Moderate'
+    df_temp.loc[expose < np.nanpercentile(expose, 30), 'f_exp_c'] = 'Low'
+    df_temp.loc[expose > np.nanpercentile(expose, 95), 'f_exp_c'] = 'High'
+    
+    if ii == 0:
+        df_total = df_temp
     else:
-        df_total=pd.concat((df_total,df_temp),axis=0)
-    ii=ii+1
+        df_total = pd.concat((df_total, df_temp), axis=0, ignore_index=True)
+    
+    ii += 1
 df_total.dropna(inplace=True)   
+#%%
+df_total.to_csv('Exposure_All_BBFInput_v1.csv')
