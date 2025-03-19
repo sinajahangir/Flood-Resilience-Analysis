@@ -40,7 +40,8 @@ ii = 0
 df_total = pd.DataFrame()
 
 for kk in [20, 100, 500]:
-    name_ = 'Clagary_%d_JBA_SW' % (kk)
+    #updated for the new exposure including edge betweenness centrality
+    name_ = 'EBC_Clagary_%d_JBA_SW' % (kk)
     df = pd.read_csv('ExposureRoad_%s_v1.csv' % (name_))
     
     # Initialize df_temp within the loop
@@ -66,6 +67,10 @@ for kk in [20, 100, 500]:
     df_temp['f_exp_c'] = 'Moderate'
     df_temp.loc[expose < np.nanpercentile(expose, 30), 'f_exp_c'] = 'Low'
     df_temp.loc[expose > np.nanpercentile(expose, 95), 'f_exp_c'] = 'High'
+    
+    
+    # Road class
+    df_temp['rc'] = df['RoadClass'].str.split(' ', expand=True)[0]
     
     if ii == 0:
         df_total = df_temp
