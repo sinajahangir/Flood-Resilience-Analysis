@@ -133,7 +133,7 @@ ax.set_xlim(x_center - x_range, x_center + x_range)
 ax.set_ylim(y_center - y_range, y_center + y_range)
 
 # Add credit and description text
-fig.text(0.01, 0.06, 'Credit: Jahangir and Shirkhani, NRC (2024)', ha='left', va='bottom', fontsize=12)
+fig.text(0.01, 0.06, 'Credit: Jahangir and Shirkhani, NRC (2025)', ha='left', va='bottom', fontsize=12)
 fig.text(0.01, 0.09, 'Flood exposure', ha='left', va='bottom', fontsize=12)
 
 # Adjust layout and save the figure
