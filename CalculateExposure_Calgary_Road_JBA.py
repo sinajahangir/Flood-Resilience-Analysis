@@ -36,7 +36,7 @@ import geopandas as gpd
 #change directory to the target folder
 os.chdir(r'D:\NRC')
 #%%
-sovi_=pd.read_csv(r"D:\NRC\DA_Calgary_Table.csv")
+sovi_=pd.read_csv(r"D:\NRC\DA_Calgary_Table_Update.csv")
 #%%
 #seven flood scenarios
 len_sovi=len(sovi_)
@@ -47,6 +47,8 @@ for kk in [20,100,500]:
         try:
             expos_temp=pd.read_csv(r'D:\NRC\SW_SampleJBA_RP=%d\Exposure_FID_%d_v1.csv'%(kk,ii),index_col=0)
             length=np.asarray(expos_temp['Maximum class']).reshape((-1,1))
+            ebc=np.asarray(sovi_.loc[ii,'EBC'])*1e7
+            
             if len(expos_temp)==0:
                 flag_=1
         except Exception as e:
@@ -59,15 +61,15 @@ for kk in [20,100,500]:
             if len(length)==0:
                 exposure_[ii,0]=0
             else:
-                exposure_[ii,0]=len(np.nonzero(length)[0])/len(length)*100
-    gdf=gpd.read_file(r"D:\NRC\Exposure_CalgaryDA\CalgaryDA.shp")
+                exposure_[ii,0]=len(np.nonzero(length)[0])/len(length)*100*ebc
+    gdf=gpd.read_file(r"D:\NRC\Exposure_CalgaryDA\CalgaryEBC_Class.shp")
     # min-max scaling
     #gdf['Exposure']=(exposure_-np.min(exposure_))/(np.max(exposure_)-np.min(exposure_))
     gdf['Exposure']=exposure_
     #df_expos=pd.DataFrame(gdf['Exposure'])
     df_expos=gdf.drop(['geometry'],axis=1)
     name_='Clagary_%d_JBA_SW'%(kk)
-    df_expos.to_csv('ExposureRoad_%s_v1.csv'%(name_),index=None)
+    df_expos.to_csv('ExposureRoad_EBC_%s_v1.csv'%(name_),index=None)
     try:
         gdf.to_file(r'Exposure_Shapefile_JBA\ExposureRoad_%s_v1.shp'%(name_))
     except Exception as e:
