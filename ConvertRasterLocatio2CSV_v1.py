@@ -14,10 +14,11 @@ import pandas as pd
 import os
 #%%
 #change directory
-os.chdir(r'D:\SBU Interview') #where the raster file is located
+os.chdir(r'D:\NRC\ClippedJBA_Calgary') #where the raster file is located
 #%%
-geotiff_files = ['FloodLayer_40mm_10min_WaterDepth_10.tif'] #Change name
+geotiff_files = ['CA_202012_FLSW_U_RP100_RB_30m_4326.tif'] #Change name
 #%%
+threshold=0 #threshold for detecting water
 for i, file in enumerate(geotiff_files):
     with rasterio.open(file) as src:
         data = src.read(1)  # First band
@@ -42,7 +43,7 @@ for i, file in enumerate(geotiff_files):
         
         # Get bounds
     # Find non-zero pixel indices
-    non_zero_indices = np.argwhere(data > 0.5)
+    non_zero_indices = np.argwhere(data > threshold)
     rows, cols = non_zero_indices[:, 0], non_zero_indices[:, 1]
     
     # Convert row/col to source CRS coordinates
@@ -60,3 +61,4 @@ for i, file in enumerate(geotiff_files):
         'northing': utm_ys,
         'value': values
     })
+    df.to_csv('%s.csv'%(file[:-4]))
