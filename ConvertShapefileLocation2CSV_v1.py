@@ -10,6 +10,7 @@ import geopandas as gpd
 import pandas as pd
 from rasterio.warp import transform
 import os
+import numpy as np
 #%%
 #change directory
 os.chdir(r'D:\NRC\Exposure_CalgaryDA\SocialNRCan_Calgary') #where the shapefile is located
@@ -34,6 +35,45 @@ utm_xs = []
 utm_ys = []
 utm_zones = []
 #%%
+gdf['SoVI_NRCan']=gdf['SoVI_NRCan'].fillna(gdf['SoVI_NRCan'].median())
+#%%
+p_sovi=np.percentile(gdf['SoVI_NRCan'],[25,75])
+#%%
+def classify_values(df, column_name, a, b, new_column_name):
+    """
+    Classifies values into Low, Moderate, High based on thresholds a and b.
+    
+    Parameters:
+    - df: pandas DataFrame
+    - column_name: Name of the column to classify
+    - a: First threshold (values ≤ a are Low, a < values ≤ b are Moderate)
+    - b: Second threshold (values > b are High)
+    - new_column_name: Name for the new classified column
+    
+    Returns:
+    - DataFrame with the new classified column added
+    """
+    conditions = [
+        (df[column_name] <= a),
+        (df[column_name] > a) & (df[column_name] <= b),
+        (df[column_name] > b)
+    ]
+    
+    choices = ['Low', 'Moderate', 'High']
+    '''
+    df[new_column_name] = pd.cut(df[column_name], 
+                                bins=[-float('inf'), a, b, float('inf')],
+                                labels=choices)
+    '''
+    
+    # Alternative using numpy select:
+    df[new_column_name] = np.select(conditions, choices, default='Unknown')
+    
+    return df
+#%%
+#Classify the column of interest
+gdf=classify_values(gdf, 'SoVI_NRCan', p_sovi[0], p_sovi[1], 'SoVI_C')
+#%%
 for lat_val, lon_val in zip(lat, lon):
     utm_zone = int((lon_val + 180) / 6) + 1
     is_northern = lat_val >= 0
@@ -52,11 +92,15 @@ df = pd.DataFrame({
     'longitude': lon,
     'easting': utm_xs,
     'northing': utm_ys,
-    'utm_epsg': utm_zones
+    'utm_epsg': utm_zones,
+    'SoVI':gdf['SoVI_C']
+    
 })
 
 print(df.head())
-
+#%%
+#Optional: Save csv
+df.to_csv(r'D:\NRC\DA_SoVI_Coordinates.csv') #Change filename and directory
 
 
 
