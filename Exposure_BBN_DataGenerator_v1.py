@@ -39,7 +39,7 @@ os.chdir(r'D:\NRC')
 ii = 0
 df_total = pd.DataFrame()
 
-for kk in [20, 100, 500]:
+for kk in [100]:
     #updated for the new exposure including edge betweenness centrality
     name_ = 'EBC_Clagary_%d_JBA_SW' % (kk)
     df = pd.read_csv('ExposureRoad_%s_v1.csv' % (name_))
